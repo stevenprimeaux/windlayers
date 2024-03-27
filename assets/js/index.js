@@ -1,3 +1,3 @@
-import { showMap } from "./showMap.js";
+import runApp from "./runApp.js";
 
-showMap();
+runApp();

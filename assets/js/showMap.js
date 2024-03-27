@@ -1,49 +1,52 @@
-import { getLeasesOutline, getPlanningsOutline } from "./getData.js";
-import { popupLeaseOutline, popupPlanningOutline } from "./util.js";
-import { constants } from "./constants.js";
+import { getDataByKey } from "./getData.js";
+import {
+  popupLeasesOutline,
+  popupPlanningsOutline,
+  styleLayer,
+} from "./util.js";
 
 const showMap = async () => {
-  const leasesOutline = await getLeasesOutline();
-  const planningsOutline = await getPlanningsOutline();
+  const [planningsOutline, leasesOutline] = [
+    await getDataByKey("plannings_outline"),
+    await getDataByKey("leases_outline"),
+  ];
 
   const map = L.map("map");
-
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
-  const styleLeaseOutline = {
-    color: constants.colorLease,
-  };
-  const layerLeasesOutline = L.geoJSON(leasesOutline, {
-    style: styleLeaseOutline,
-    onEachFeature: popupLeaseOutline,
+  const layerPlanningsOutline = L.geoJSON(planningsOutline.data, {
+    style: styleLayer(planningsOutline),
+    onEachFeature: popupPlanningsOutline,
   }).addTo(map);
 
-  const stylePlanningOutline = {
-    color: constants.colorPlanning,
-  };
-  const layerPlanningsOutline = L.geoJSON(planningsOutline, {
-    style: stylePlanningOutline,
-    onEachFeature: popupPlanningOutline,
+  const layerLeasesOutline = L.geoJSON(leasesOutline.data, {
+    style: styleLayer(leasesOutline),
+    onEachFeature: popupLeasesOutline,
   }).addTo(map);
 
-  const group = new L.featureGroup([layerLeasesOutline, layerPlanningsOutline]);
+  const group = new L.featureGroup([layerPlanningsOutline, layerLeasesOutline]);
   map.fitBounds(group.getBounds());
 
   const control = L.control.layers().addTo(map);
-  control.addOverlay(layerLeasesOutline, constants.displayNameLease);
-  control.addOverlay(layerPlanningsOutline, constants.displayNamePlanning);
+  control.addOverlay(
+    layerPlanningsOutline,
+    planningsOutline.metadata.textDisplay
+  );
+  control.addOverlay(layerLeasesOutline, leasesOutline.metadata.textDisplay);
 
   const legend = L.control({ position: "bottomright" });
-  legend.onAdd = function (map) {
-    var div = L.DomUtil.create("div", "info legend");
+  legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "info legend");
     div.innerHTML += `
-      <i style="background: ${constants.colorLease}"></i>${constants.displayNameLease}<br>
+      <i style="background: ${planningsOutline.metadata.color}">
+      </i>${planningsOutline.metadata.textDisplay}<br>
     `;
     div.innerHTML += `
-      <i style="background: ${constants.colorPlanning}"></i>${constants.displayNamePlanning}<br>
+      <i style="background: ${leasesOutline.metadata.color}">
+      </i>${leasesOutline.metadata.textDisplay}<br>
     `;
 
     return div;
