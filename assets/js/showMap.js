@@ -6,10 +6,7 @@ const showMap = async () => {
   const leasesOutline = await getLeasesOutline();
   const planningsOutline = await getPlanningsOutline();
 
-  const map = L.map("map", {
-    center: constants.mapCenter,
-    zoom: constants.mapZoom,
-  });
+  const map = L.map("map");
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
@@ -31,6 +28,9 @@ const showMap = async () => {
     style: stylePlanningOutline,
     onEachFeature: popupPlanningOutline,
   }).addTo(map);
+
+  const group = new L.featureGroup([layerLeasesOutline, layerPlanningsOutline]);
+  map.fitBounds(group.getBounds());
 
   const control = L.control.layers().addTo(map);
   control.addOverlay(layerLeasesOutline, constants.displayNameLease);
