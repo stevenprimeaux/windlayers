@@ -1,38 +1,39 @@
+import {
+  popupLeasesOutline,
+  popupMHKsOutline,
+  popupPlanningsOutline,
+} from "./popups.js";
+
 const constants = {};
-
 constants.urlBase = "http://windlayers.s3-website.us-east-2.amazonaws.com";
+constants.urlTile = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+constants.copyrightURL = "https://www.openstreetmap.org/copyright";
+constants.copyrightText = "OpenStreetMap";
 
-const fileInfoArray = [
+const layers = [
   {
     key: "plannings_outline",
     textDisplay: "Planning areas outline",
-    color: "#C87A8A",
-  },
-  {
-    key: "plannings",
-    textDisplay: "Planning areas",
-    color: "",
+    color: "#1b9e77",
+    popup: popupPlanningsOutline,
   },
   {
     key: "leases_outline",
     textDisplay: "Leases outline",
-    color: "#00A396",
-  },
-  {
-    key: "leases",
-    textDisplay: "Leases",
-    color: "",
+    color: "#d95f02",
+    popup: popupLeasesOutline,
   },
   {
     key: "mhks",
     textDisplay: "MHK areas",
-    color: "",
+    color: "#7570b3",
+    popup: popupMHKsOutline,
   },
 ];
 
-fileInfoArray.forEach((fileInfo) => {
-  fileInfo.nameFile = `${fileInfo.key}.json`;
-  fileInfo.linkFile = `${constants.urlBase}/json/${fileInfo.nameFile}`;
+layers.forEach((layer) => {
+  layer.nameFile = `${layer.key}.json`;
+  layer.linkFile = `${constants.urlBase}/json/${layer.nameFile}`;
 });
 
-export { constants, fileInfoArray };
+export { constants, layers };

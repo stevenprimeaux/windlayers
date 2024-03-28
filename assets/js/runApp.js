@@ -1,7 +1,8 @@
+import { layers } from "./constants.js";
 import { insertLinksData } from "./insertLinksData.js";
-import { showMap } from "./showMap.js";
+import { insertMap } from "./insertMap.js";
 
 export default function runApp() {
-  insertLinksData();
-  showMap();
+  insertLinksData(layers);
+  insertMap(layers);
 }

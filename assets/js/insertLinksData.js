@@ -1,10 +1,10 @@
-import { fileInfoArray } from "./constants.js";
-
-function insertLinksData() {
+function insertLinksData(layers) {
   const linksData = document.getElementById("ul-links-data");
 
-  fileInfoArray.forEach((fileInfo) => {
-    linksData.innerHTML += `<li><a href="${fileInfo.linkFile}">${fileInfo.textDisplay}</a></li>`;
+  layers.forEach((layer) => {
+    linksData.innerHTML += `
+      <li><a href="${layer.linkFile}">${layer.textDisplay}</a></li>
+    `;
   });
 }
 
